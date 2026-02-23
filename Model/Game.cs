@@ -10,6 +10,8 @@ public class Game
 
     public float Rating { get; set; }
 
+    public List<Category> Categories { get; set; } = [];
+
     public Game(int id, string title, decimal price, float rating)
     {
         Id = id;
