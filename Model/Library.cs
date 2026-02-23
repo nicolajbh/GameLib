@@ -1,6 +1,8 @@
-﻿namespace database;
+﻿using System.Collections;
 
-public class Library
+namespace database;
+
+public class Library : IEnumerable<Game>
 {
     public User User { get; set; }
     public List<Game> Games { get; set; } = [];
@@ -9,5 +11,15 @@ public class Library
     {
         User = user;
         Games = games;
+    }
+
+    public IEnumerator<Game> GetEnumerator()
+    {
+        return Games.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
