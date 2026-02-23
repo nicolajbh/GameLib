@@ -1,6 +1,3 @@
 ﻿namespace database;
 
-public class Developer
-{
-
-}
+public class DeveloperRepository { }

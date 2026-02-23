@@ -7,5 +7,11 @@ public class Order
     public Game Game { get; set; }
     public DateTime Date { get; set; }
 
-    public Order() { }
+    public Order(int id, User user, Game game)
+    {
+        Id = id;
+        User = user;
+        Game = game;
+        Date = DateTime.Now;
+    }
 }

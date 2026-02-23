@@ -18,5 +18,6 @@ public class Game
         Title = title;
         Price = price;
         Rating = rating;
+        Categories = [];
     }
 }
