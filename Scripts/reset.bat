@@ -1,7 +1,7 @@
 @echo off
 
 echo Deleting database...
-sqlcmd -S localhost\SQLEXPRESS -C -i reset.sql
+sqlcmd -S localhost\SQLEXPRESS -C -i reset_db.sql
 
 echo Setting up database...
 sqlcmd -S localhost\SQLEXPRESS -C -i GameDB_DDL.sql
