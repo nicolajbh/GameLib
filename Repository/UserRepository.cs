@@ -6,17 +6,15 @@ public static class UserRepository
 {
   static string connectionString = DBConnection.Connection;
 
-  public static User? GetUserById(int id)
-  {
-    try
+    public static User? GetUserById(int userId)
     {
       using (SqlConnection connection = new SqlConnection(connectionString))
       {
         connection.Open();
 
-        const string query = "SELECT * from users WHERE @ID = user_id";
-        SqlCommand command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@ID", id);
+                const string query = "SELECT * from users WHERE @ID = user_id";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ID", userId);
 
         SqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
