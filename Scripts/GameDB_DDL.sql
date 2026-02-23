@@ -88,3 +88,21 @@ CONSTRAINT fk_game_category FOREIGN KEY (game_id) REFERENCES game (game_id) ON D
 CONSTRAINT fk_category_game FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE CASCADE
 ) ;
 END ;
+
+-- Views
+GO
+CREATE OR ALTAR VIEW vw_UserGameLibrary AS
+SELECT u.name AS [Username],
+g.title AS [GameTitle],
+g.rating AS [Rating],
+STRING_AGG (c.name,
+', ') AS [Categories]
+FROM users u
+JOIN library l ON u.user_id = l.user_id
+JOIN game g ON l.game_id = g.game_id
+LEFT JOIN game_category gc ON g.game_id = gc.game_id
+LEFT JOIN category c ON gc.category_id = c.category_id
+GROUP BY u.name, g.title, g.rating ;
+GO
+
+-- Stored Procedures
