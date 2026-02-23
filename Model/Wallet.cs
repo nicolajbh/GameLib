@@ -6,5 +6,10 @@ public class Wallet
     public User User { get; set; }
     public decimal Balance { get; set; }
 
-    public Wallet() { }
+    public Wallet(int id, User user, decimal balance)
+    {
+        Id = id;
+        User = user;
+        Balance = balance;
+    }
 }

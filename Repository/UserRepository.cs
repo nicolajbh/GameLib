@@ -19,7 +19,6 @@ public static class UserRepository
                 command.Parameters.AddWithValue("@ID", id);
 
                 SqlDataReader reader = command.ExecuteReader();
-
                 while (reader.Read())
                 {
                     int fetchedId = reader.GetInt32(reader.GetOrdinal("user_id"));
