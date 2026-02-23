@@ -3,5 +3,8 @@ echo Setting up database...
 
 sqlcmd -S localhost\SQLEXPRESS -C -i GameDB_DDL.sql
 
-echo Database setup complete
+echo Seeding data...
+sqlcmd -S localhost\SQLEXPRESS -d GameDB -C -i seed_db.sql
+
+echo Database setup complete!
 pause
