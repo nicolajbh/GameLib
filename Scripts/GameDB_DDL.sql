@@ -91,7 +91,7 @@ END ;
 
 -- Views
 GO
-CREATE OR ALTAR VIEW vw_UserGameLibrary AS
+CREATE OR ALTER VIEW vw_UserGameLibrary AS
 SELECT u.name AS [Username],
 g.title AS [GameTitle],
 g.rating AS [Rating],
