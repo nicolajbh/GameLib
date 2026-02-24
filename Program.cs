@@ -32,6 +32,8 @@ internal class Program
   static void ShowMainMenu(User user)
   {
     Library userLibrary = UserRepository.GetUserLibrary(user);
+    List<Game> allGames = GameRepository.GetAllGames();
+
 
     string[] gameTitles = userLibrary.Games.Select(g => g.Title).ToArray();
 
@@ -43,6 +45,18 @@ internal class Program
       PrintMenu(gameTitles, selectedIndex);
       int result = MenuSelect(gameTitles, selectedIndex);
       if (result == -1) break; // user made selection, exit menu loop
+      if (result == -2)
+      {
+        gameTitles = userLibrary.Games.Select(g => g.Title).ToArray();
+        selectedIndex = 0;
+        continue;
+      }
+      if (result == -3)
+      {
+        gameTitles = allGames.Select(g => g.Title).ToArray();
+        selectedIndex = 0;
+        continue;
+      }
       selectedIndex = result;
     }
     Console.Clear();
@@ -80,6 +94,8 @@ internal class Program
       ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
       ConsoleKey.DownArrow => Math.Min(menu.Length - 1, currentIndex + 1), // prevent index going over lenght of menu
       ConsoleKey.Enter => -1,
+      ConsoleKey.D1 => -2,
+      ConsoleKey.D2 => -3,
       _ => currentIndex,
     };
   }
