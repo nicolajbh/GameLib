@@ -6,18 +6,29 @@ public static class StoreRepository
 {
     static string connectionString = DBConnection.Connection;
 
-    public static string PurchaseGame(Game game, User user)
+    public static void PurchaseGame(Game game, User user)
     {
         if (game == null)
-            return "Purchase Failed: Game data is missing.";
+        {
+            Console.WriteLine("Purchase Failed: Game data is missing.");
+            return;
+        }
         if (user == null)
-            return "Purchase Failed: User data is missing.";
+        {
+            Console.WriteLine("Purchase Failed: User data is missing.");
+        }
         if (user.Wallet == null)
-            return "Purchase Failed: User wallet is missing.";
+        {
+            Console.WriteLine("Purchase Failed: User wallet is missing.");
+            return;
+        }
 
         if (user.Wallet.Balance < game.Price)
         {
-            return $"Purchase Failed: {user.Wallet.Balance} is insufficient to buy {game.Title}, costs {game.Price}";
+            Console.WriteLine(
+                $"Purchase Failed: {user.Wallet.Balance} is insufficient to buy: {game.Title}, costs: {game.Price}"
+            );
+            return;
         }
 
         try
@@ -39,12 +50,15 @@ public static class StoreRepository
             );
 
             command.ExecuteNonQuery();
-            return $"Successfully inserted {user.Id} {game.Id} {DateTime.Now} into the DB.";
+            Console.WriteLine(
+                $"Successfully inserted {user.Id} {game.Id} {DateTime.Now} into the DB."
+            );
+            return;
         }
         catch (SqlException ex)
         {
-            Console.WriteLine($"SQL Exception Occurred: {ex.Message}");
-            return "Purchase Failed: A database error occurred: " + ex.Message;
+            Console.WriteLine("Purchase Failed: A database error occurred: " + ex.Message);
+            return;
         }
     }
 }
