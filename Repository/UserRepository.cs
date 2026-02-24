@@ -94,4 +94,27 @@ public static class UserRepository
       }
     }
   }
+
+  public static bool UpdateBalance(User user, decimal balanceChange)
+  {
+    try
+    {
+      using (SqlConnection connection = new SqlConnection(connectionString))
+      {
+        const string sql = "UPDATE wallet SET balance = balance + @NewBalance WHERE user_id = @UserId";
+        SqlCommand cmd = new SqlCommand(sql, connection);
+
+        cmd.Parameters.AddWithValue("@NewBalance", balanceChange);
+        cmd.Parameters.AddWithValue("@UserId", user.Id);
+
+        connection.Open();
+        return cmd.ExecuteNonQuery() > 0;
+      }
+    }
+    catch (SqlException ex)
+    {
+      Console.WriteLine($"SQL Exception Occured: {ex.Message}");
+      return false;
+    }
+  }
 }
