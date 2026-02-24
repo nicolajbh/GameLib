@@ -5,18 +5,43 @@ internal class Program
   public static void Main(string[] args)
   {
     PrintWelcomeScreen();
-    ShowMainMenu();
+    User? user = Login();
+    ShowMainMenu(user);
   }
 
-  static void ShowMainMenu()
+  static User Login()
   {
-    var games = GameRepository.GetAllGames();
+    List<User>? availableUsers = UserRepository.GetUsers();
+    string[] userNames = availableUsers.Select(u => u.Name).ToArray();
+    if (availableUsers == null)
+      return null;
+
     int selectedIndex = 0; // index to track selected menu item
     while (true)
     {
       Console.Clear();
-      PrintMenu(games, selectedIndex);
-      int result = MenuSelect(games, selectedIndex);
+      PrintMenu(userNames, selectedIndex);
+      int result = MenuSelect(userNames, selectedIndex);
+      if (result == -1) break; // user made selection, exit menu loop
+      selectedIndex = result;
+    }
+    Console.Clear();
+    return availableUsers[selectedIndex];
+  }
+
+  static void ShowMainMenu(User user)
+  {
+    Library userLibrary = UserRepository.GetUserLibrary(user);
+
+    string[] gameTitles = userLibrary.Games.Select(g => g.Title).ToArray();
+
+    int selectedIndex = 0; // index to track selected menu item
+    while (true)
+    {
+      Console.Clear();
+      Console.WriteLine($"Library(1) | Store(2) | Logged in as: {user.Name} | Balance: {user.Wallet.Balance}");
+      PrintMenu(gameTitles, selectedIndex);
+      int result = MenuSelect(gameTitles, selectedIndex);
       if (result == -1) break; // user made selection, exit menu loop
       selectedIndex = result;
     }
@@ -32,73 +57,32 @@ internal class Program
     Console.ReadKey();
   }
 
-  /// <summary>
-  /// Loops through menu titles and prints to console
-  /// Adds arrow to item currently selected from menu
-  /// </summary>
-  static void PrintMenu(List<Game> games, int currentIndex)
+  static void PrintMenu(string[] menu, int currentIndex)
   {
-    Console.WriteLine($"Library(1) | Store(2) | Logged in as: xx | Balance: xx");
-    for (int i = 0; i < games.Count; i++)
+    for (int i = 0; i < menu.Length; i++)
     {
       if (i == currentIndex)
       {
-        Console.WriteLine($"> {games[i].Title} - {games[i].Price}");
+        Console.WriteLine($"> {menu[i]}");
       }
       else
       {
-        Console.WriteLine($"{games[i].Title} - {games[i].Price} "); // spaces to write over previously selected items
+        Console.WriteLine($"{menu[i]}"); // spaces to write over previously selected items
       }
     }
     Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
   }
 
-  static int MenuSelect(List<Game> games, int currentIndex)
+  static int MenuSelect(string[] menu, int currentIndex)
   {
     return Console.ReadKey().Key switch
     {
       ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
-      ConsoleKey.DownArrow => Math.Min(games.Count - 1, currentIndex + 1), // prevent index going over lenght of menu
+      ConsoleKey.DownArrow => Math.Min(menu.Length - 1, currentIndex + 1), // prevent index going over lenght of menu
       ConsoleKey.Enter => -1,
       _ => currentIndex,
     };
   }
-List<User>? availableUsers = UserRepository.GetUsers();
-
-if (availableUsers == null)
-    return;
-
-User? selectedUserObject = null;
-
-while (true)
-{
-    foreach (var user_ in availableUsers)
-    {
-        Console.WriteLine($"{user_.Id}: {user_.Name} - {user_.Wallet.Balance}");
-    }
-
-    Console.WriteLine();
-    Console.WriteLine("Please select a user.\n");
-
-    if (!int.TryParse(Console.ReadLine(), out int selectedUser))
-    {
-        Console.WriteLine("Invalid input");
-        continue;
-    }
-    if (selectedUser < 1)
-    {
-        Console.WriteLine("Invalid Input. Please select a valid User ID.");
-        continue;
-    }
-
-    User? user = UserRepository.GetUserById(selectedUser);
-
-    if (user == null)
-    {
-        Console.WriteLine("Error Occured, user not found.");
-    }
-    selectedUserObject = user;
-    break;
 }
 
 
