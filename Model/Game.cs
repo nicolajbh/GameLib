@@ -12,6 +12,8 @@ public class Game
 
     public List<Category> Categories { get; set; } = [];
 
+    public Developer Studio { get; set; }
+
     public Game(int id, string title, decimal price, double rating)
     {
         Id = id;
@@ -19,6 +21,7 @@ public class Game
         Price = price;
         Rating = rating;
         Categories = [];
+        Studio = new Developer();
     }
 
     public string PrintGameCategories()
