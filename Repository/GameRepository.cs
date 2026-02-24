@@ -32,7 +32,7 @@ public static class GameRepository
                     int gameId = reader.GetInt32(reader.GetOrdinal("game_id"));
                     string title = reader.GetString(reader.GetOrdinal("title"));
                     decimal price = reader.GetDecimal(reader.GetOrdinal("price"));
-                    float rating = reader.GetFloat(reader.GetOrdinal("rating"));
+                    double rating = reader.GetDouble(reader.GetOrdinal("rating"));
                     games.Add(new Game(gameId, title, price, rating));
                 }
                 reader.Close();

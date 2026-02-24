@@ -2,7 +2,7 @@
 
 namespace database;
 
-public class Library : IEnumerable<Game>
+public class Library
 {
     public User User { get; set; }
     public List<Game> Games { get; set; } = [];
@@ -11,15 +11,5 @@ public class Library : IEnumerable<Game>
     {
         User = user;
         Games = games;
-    }
-
-    public IEnumerator<Game> GetEnumerator()
-    {
-        return Games.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

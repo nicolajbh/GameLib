@@ -8,11 +8,11 @@ public class Game
 
     public decimal Price { get; set; }
 
-    public float Rating { get; set; }
+    public double Rating { get; set; }
 
-    public List<Category> Categories { get; set; } = [];
+    public List<GameCategory> Categories { get; set; } = [];
 
-    public Game(int id, string title, decimal price, float rating)
+    public Game(int id, string title, decimal price, double rating)
     {
         Id = id;
         Title = title;
