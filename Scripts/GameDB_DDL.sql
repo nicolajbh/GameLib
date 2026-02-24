@@ -29,6 +29,16 @@ CONSTRAINT fk_wallet_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DE
 ) ;
 END ;
 
+-- Developer
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'developer')
+BEGIN
+CREATE TABLE developer (
+developer_id INTEGER IDENTITY (1, 1) PRIMARY KEY NOT NULL,
+studio_name NVARCHAR (50) NOT NULL,
+studio_size INTEGER NOT NULL
+) ;
+END ;
+
 -- Game
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'game')
 BEGIN
@@ -36,7 +46,9 @@ CREATE TABLE game (
 game_id INT PRIMARY KEY IDENTITY (1, 1),
 title NVARCHAR (50),
 price DECIMAL (10, 2),
-rating FLOAT
+rating FLOAT,
+developer_id INT,
+CONSTRAINT fk_game_developer FOREIGN KEY (developer_id) REFERENCES developer (developer_id) ON DELETE CASCADE
 ) ;
 END ;
 
@@ -89,20 +101,35 @@ CONSTRAINT fk_category_game FOREIGN KEY (category_id) REFERENCES category (categ
 ) ;
 END ;
 
+
 -- Views
+-- User Game Libary
 GO
 CREATE OR ALTER VIEW vw_UserGameLibrary AS
-SELECT u.name AS [Username],
+SELECT
+u.user_id,
+g.game_id,
 g.title AS [GameTitle],
 g.rating AS [Rating],
-STRING_AGG (c.name,
-', ') AS [Categories]
+c.category_id,
+c.name AS [CategoryName]
 FROM users u
 JOIN library l ON u.user_id = l.user_id
 JOIN game g ON l.game_id = g.game_id
 LEFT JOIN game_category gc ON g.game_id = gc.game_id
-LEFT JOIN category c ON gc.category_id = c.category_id
-GROUP BY u.name, g.title, g.rating ;
+LEFT JOIN category c ON gc.category_id = c.category_id ;
+GO
+
+-- User
+GO
+CREATE OR ALTER VIEW vw_UserDetails AS
+SELECT u.user_id AS user_id,
+u.name AS name,
+w.wallet_id AS wallet_id,
+w.balance AS balance
+FROM dbo.users u
+JOIN dbo.wallet w
+ON u.user_id = w.user_id ;
 GO
 
 -- Stored Procedures

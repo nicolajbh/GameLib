@@ -19,15 +19,24 @@ INSERT INTO wallet (user_id, balance) VALUES
 (4, 500.00), -- High balance
 (5, 5.00) ;  -- Very low balance
 
+-- 3. Developer
+INSERT INTO developer (studio_name, studio_size) VALUES
+("CD PROJECT RED", 350),
+("XBOX", 512),
+("Valve", 220),
+("FromSoftware", 400),
+("Pocketpair", 150),
+("Dave's Studio", 1) ;
+
 -- 3. Game
 -- Expanded library with various prices
-INSERT INTO game (title, price, rating) VALUES
-('Elden Ring', 59.99, 9.5),      -- Game 1
-('Counter-Strike 2', 0.00, 8.2), -- Game 2
-('Helldivers 2', 39.99, 9.0),    -- Game 3
-('Palworld', 29.99, 8.5),        -- Game 4
-('Cyberpunk 2077', 49.99, 8.8),  -- Game 5
-('Stardew Valley', 14.99, 9.8) ; -- Game 6
+INSERT INTO game (title, price, rating, developer_id) VALUES
+('Elden Ring', 59.99, 9.5, 4),      -- Game 1
+('Counter-Strike 2', 0.00, 8.2, 3), -- Game 2
+('Helldivers 2', 39.99, 9.0, 2),    -- Game 3
+('Palworld', 29.99, 8.5, 5),        -- Game 4
+('Cyberpunk 2077', 49.99, 8.8, 1),  -- Game 5
+('Stardew Valley', 14.99, 9.8, 6) ; -- Game 6
 
 -- 4. Category
 INSERT INTO category (name) VALUES
