@@ -10,7 +10,7 @@ public class Game
 
     public double Rating { get; set; }
 
-    public List<GameCategory> Categories { get; set; } = [];
+    public List<Category> Categories { get; set; } = [];
 
     public Game(int id, string title, decimal price, double rating)
     {
@@ -19,5 +19,14 @@ public class Game
         Price = price;
         Rating = rating;
         Categories = [];
+    }
+
+    public string PrintGameCategories()
+    {
+        foreach (var category in Categories)
+        {
+            return category.Name;
+        }
+        return "";
     }
 }

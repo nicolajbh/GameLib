@@ -8,6 +8,8 @@ if (library != null)
 {
     foreach (Game game in library.Games)
     {
-        Console.WriteLine($"Game: {game.Id}, {game.Title}, {game.Price}, {game.Rating}");
+        Console.WriteLine(
+            $"Game: {game.Id}, {game.Title}, {game.Price}, {game.Rating} {game.PrintGameCategories()}"
+        );
     }
 }
