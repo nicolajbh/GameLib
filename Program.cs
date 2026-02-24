@@ -4,6 +4,10 @@ internal class Program
 {
     public static void Main(string[] args)
     {
+        // Game game = new Game(1, "Elden Ring", 59.99m, 9.5);
+        // User? user = UserRepository.GetUserById(2);
+        // StoreRepository.PurchaseGame(game, user);
+
         PrintWelcomeScreen();
         User? user = Login();
         ShowMainMenu(user);
