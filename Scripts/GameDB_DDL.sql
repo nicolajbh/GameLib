@@ -109,13 +109,18 @@ CREATE OR ALTER VIEW vw_UserGameLibrary AS
 SELECT
 u.user_id,
 g.game_id,
+d.developer_id,
 g.title AS [GameTitle],
+d.studio_name AS [StudioName],
+d.studio_size AS studio_size,
 g.rating AS [Rating],
+g.price AS [Price],
 c.category_id,
 c.name AS [CategoryName]
 FROM users u
 JOIN library l ON u.user_id = l.user_id
 JOIN game g ON l.game_id = g.game_id
+JOIN developer d ON g.developer_id = d.developer_id
 LEFT JOIN game_category gc ON g.game_id = gc.game_id
 LEFT JOIN category c ON gc.category_id = c.category_id ;
 GO
