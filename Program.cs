@@ -1,24 +1,24 @@
 ﻿using database;
+using database.Utils;
+using System.Globalization;
 
 internal class Program
 {
   public static void Main(string[] args)
   {
-    // Game game = new Game(1, "Elden Ring", 59.99m, 9.5);
-    // User? user = UserRepository.GetUserById(2);
-    // StoreRepository.PurchaseGame(game, user);
+    Menu.PrintWelcomeScreen();
 
-    PrintWelcomeScreen();
     User? user = Login();
     if (user == null)
     {
       Console.WriteLine("No users found or login failed. Exiting...");
       return;
     }
+
     ShowMainMenu(user);
   }
-
-  static User Login()
+  private static readonly CultureInfo EuroCulture = new CultureInfo("fr-FR");
+  static User? Login()
   {
     List<User>? availableUsers = UserRepository.GetUsers();
     if (availableUsers == null || availableUsers.Count == 0)
@@ -26,34 +26,36 @@ internal class Program
 
     List<string> userNames = availableUsers.Select(u => u.Name).ToList();
     int selectedIndex = 0;
+
     while (true)
     {
       Console.Clear();
       Console.WriteLine("Select a user to login:\n");
-      PrintMenu(userNames, selectedIndex);
-
+      Menu.PrintMenu(userNames, selectedIndex);
       ConsoleKey key = Console.ReadKey(intercept: true).Key;
       if (key == ConsoleKey.Enter) break;
-
-      selectedIndex = HandleNavigation(key, selectedIndex, userNames.Count);
+      selectedIndex = Menu.HandleNavigation(key, selectedIndex, userNames.Count);
     }
 
-  enum ViewMode { Library, Store }
+    Console.Clear();
+    return availableUsers[selectedIndex];
+  }
+
+  enum ViewMode { Library, Store, CreditShop }
 
   static void ShowMainMenu(User user)
   {
-
     ViewMode currentView = ViewMode.Library;
     List<Game> displayGames = UserRepository.GetUserLibrary(user)?.Games ?? new List<Game>();
-    int selectedIndex = 0; // index to track selected menu item
+    int selectedIndex = 0;
+    List<string> menuItems = displayGames.Select(g => g.Title).ToList();
+
     while (true)
     {
       Console.Clear();
-      string header = $"Library(1) | Store(2) | Logged in as: {user.Name} | Balance: {user.Wallet.Balance:C}";
+      string header = $"Library(1) | Store(2) | Buy Credits(3) | Logged in as: {user.Name} | Balance: {user.Wallet.Balance.ToString("C", EuroCulture)}";
       Console.WriteLine(header);
       Console.WriteLine(new string('-', header.Length));
-
-      List<string> menuItems = displayGames.Select(g => g.Title).ToList();
 
       if (menuItems.Count == 0)
       {
@@ -61,83 +63,46 @@ internal class Program
       }
       else
       {
-        PrintMenu(menuItems, selectedIndex);
+        Menu.PrintMenu(menuItems, selectedIndex);
       }
+
       ConsoleKey key = Console.ReadKey(intercept: true).Key;
 
       switch (key)
       {
         case ConsoleKey.UpArrow:
         case ConsoleKey.DownArrow:
-          selectedIndex = HandleNavigation(key, selectedIndex, menuItems.Count);
+          selectedIndex = Menu.HandleNavigation(key, selectedIndex, menuItems.Count);
           break;
+
         case ConsoleKey.Enter:
           if (currentView == ViewMode.Store && displayGames.Count > 0)
           {
-            Console.WriteLine("Purchased game!");
-            Console.ReadKey();
+            Console.WriteLine($"\nPurchased {displayGames[selectedIndex].Title}!");
+            Console.ReadKey(intercept: true);
           }
           break;
 
         case ConsoleKey.D1:
           currentView = ViewMode.Library;
           displayGames = UserRepository.GetUserLibrary(user)?.Games ?? new List<Game>();
+          menuItems = displayGames.Select(g => g.Title).ToList();
           selectedIndex = 0;
           break;
 
         case ConsoleKey.D2:
           currentView = ViewMode.Store;
           displayGames = GameRepository.GetAllGames() ?? new List<Game>();
+          menuItems = displayGames.Select(g => g.Title).ToList();
+          selectedIndex = 0;
+          break;
+
+        case ConsoleKey.D3:
+          currentView = ViewMode.CreditShop;
+          menuItems = StoreRepository.GetCreditOptions();
           selectedIndex = 0;
           break;
       }
     }
-
-    static void PrintWelcomeScreen()
-    {
-        Console.Clear();
-        Console.WriteLine(@"                                  Welcome to the GameLib v1.0!");
-        Console.WriteLine(
-            @"===================================================================================================="
-        );
-        Console.WriteLine("                                    Press any key to start...");
-        Console.ReadKey();
-    }
-
-  static void PrintMenu(List<string> menu, int currentIndex)
-  {
-    for (int i = 0; i < menu.Count; i++)
-    {
-      if (i == currentIndex)
-      {
-        Console.WriteLine($"> {menu[i]}");
-      }
-      else
-      {
-        Console.WriteLine($"  {menu[i]}"); // spaces to write over previously selected items
-      }
-    }
-
-    static int MenuSelect(string[] menu, int currentIndex)
-    {
-      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
-      ConsoleKey.DownArrow => Math.Min(menu.Length - 1, currentIndex + 1), // prevent index going over lenght of menu
-      ConsoleKey.Enter => -1,
-      ConsoleKey.D1 => -2,
-      ConsoleKey.D2 => -3,
-      _ => currentIndex,
-    };
-  }
-
-  static int HandleNavigation(ConsoleKey key, int currentIndex, int maxItems)
-  {
-    if (maxItems == 0) return 0;
-
-    return key switch
-    {
-      ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
-      ConsoleKey.DownArrow => Math.Min(maxItems - 1, currentIndex + 1), // prevent index going over lenght of menu
-      _ => currentIndex,
-    };
   }
 }
