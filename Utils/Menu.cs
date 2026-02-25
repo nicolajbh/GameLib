@@ -46,7 +46,7 @@ public static class Menu
         Console.Clear();
         Console.Write("Enter username: ");
         string userName = Console.ReadLine();
-        // create user method
+        UserRepository.CreateUser(userName);
       }
       selectedIndex = HandleNavigation(key, selectedIndex, menuOptions.Count);
     }
