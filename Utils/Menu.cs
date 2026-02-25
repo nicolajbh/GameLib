@@ -33,5 +33,22 @@ public static class Menu
     Console.WriteLine(@"====================================================================================================");
     Console.WriteLine(@"                                 Press any key to start...");
     Console.ReadKey(intercept: true);
+    List<string> menuOptions = new List<string> { "Login", "Create new user" };
+    int selectedIndex = 0;
+    while (true)
+    {
+      Console.Clear();
+      PrintMenu(menuOptions, selectedIndex);
+      ConsoleKey key = Console.ReadKey(intercept: true).Key;
+      if (key == ConsoleKey.Enter)
+      {
+        if (selectedIndex == 0) break;
+        Console.Clear();
+        Console.Write("Enter username: ");
+        string userName = Console.ReadLine();
+        // create user method
+      }
+      selectedIndex = HandleNavigation(key, selectedIndex, menuOptions.Count);
+    }
   }
 }
