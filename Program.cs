@@ -47,6 +47,7 @@ internal class Program
   {
     ViewMode currentView = ViewMode.Library;
     List<Game> displayGames = UserRepository.GetUserLibrary(user)?.Games ?? new List<Game>();
+    List<decimal> creditOptions = new List<decimal>();
     int selectedIndex = 0;
     List<string> menuItems = displayGames.Select(g => g.Title).ToList();
 
@@ -78,8 +79,11 @@ internal class Program
         case ConsoleKey.Enter:
           if (currentView == ViewMode.Store && displayGames.Count > 0)
           {
-            Console.WriteLine($"\nPurchased {displayGames[selectedIndex].Title}!");
-            Console.ReadKey(intercept: true);
+            Console.WriteLine($"You bought: {menuItems[selectedIndex]}");
+          }
+          if (currentView == ViewMode.CreditShop && creditOptions.Count > 0)
+          {
+            StoreRepository.PurchaseCredits(user, creditOptions[selectedIndex]);
           }
           break;
 
@@ -99,7 +103,8 @@ internal class Program
 
         case ConsoleKey.D3:
           currentView = ViewMode.CreditShop;
-          menuItems = StoreRepository.GetCreditOptions();
+          creditOptions = StoreRepository.GetCreditOptions();
+          menuItems = creditOptions.Select(c => c.ToString("C", EuroCulture)).ToList();
           selectedIndex = 0;
           break;
       }
