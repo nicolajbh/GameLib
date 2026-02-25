@@ -79,7 +79,9 @@ internal class Program
         case ConsoleKey.Enter:
           if (currentView == ViewMode.Store && displayGames.Count > 0)
           {
-            Console.WriteLine($"You bought: {menuItems[selectedIndex]}");
+            StoreRepository.PurchaseGame(displayGames[selectedIndex], user);
+            // Console.WriteLine($"You bought: {displayGames[selectedIndex].Title}");
+            Console.ReadKey();
           }
           if (currentView == ViewMode.CreditShop && creditOptions.Count > 0)
           {
