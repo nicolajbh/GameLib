@@ -138,3 +138,24 @@ ON u.user_id = w.user_id ;
 GO
 
 -- Stored Procedures
+CREATE OR ALTER PROCEDURE sp_PurchaseGame
+    @UserId INT,
+    @GameId INT,
+    @Price DECIMAL(10,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    
+    BEGIN TRY
+        INSERT INTO [order] (user_id, game_id, date) VALUES (@UserId, @GameId, GETDATE());
+        INSERT INTO library (user_id, game_id) VALUES (@UserId, @GameId);
+        UPDATE wallet SET balance = balance - @Price WHERE user_id = @UserId;
+        
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END

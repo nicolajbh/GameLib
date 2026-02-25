@@ -1,5 +1,6 @@
 ﻿using database.Utils;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace database;
 
@@ -63,28 +64,27 @@ public static class StoreRepository
       return;
     }
 
+    Library library = UserRepository.GetUserLibrary(user);
+    if (library.Games.Any(g => g.Id == game.Id))
+    {
+      Console.WriteLine("Game already owned");
+      return;
+    }
+
     try
     {
-      string query =
-          "INSERT INTO [order] (user_id, game_id, date) VALUES (@USERID, @GAMEID, @DATE)";
-
       using SqlConnection connection = new SqlConnection(connectionString);
       connection.Open();
 
-      using SqlCommand command = new SqlCommand(query, connection);
-      command.Parameters.AddRange(
-          new SqlParameter[]
-          {
-                    new("@USERID", user.Id),
-                    new("@GAMEID", game.Id),
-                    new("@DATE", DateTime.Now),
-          }
-      );
+      using SqlCommand cmd = new SqlCommand("sp_PurchaseGame", connection);
+      cmd.CommandType = CommandType.StoredProcedure;
+      cmd.Parameters.AddWithValue("@UserId", user.Id);
+      cmd.Parameters.AddWithValue("@GameId", game.Id);
+      cmd.Parameters.AddWithValue("@Price", game.Price);
 
-      command.ExecuteNonQuery();
-      Console.WriteLine(
-          $"Successfully inserted {user.Id} {game.Id} {DateTime.Now} into the DB."
-      );
+      cmd.ExecuteNonQuery();
+      user.Wallet.Balance -= game.Price;
+      Console.WriteLine($"Successfully purchased {game.Title}!");
       return;
     }
     catch (SqlException ex)
