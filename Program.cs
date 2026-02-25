@@ -37,9 +37,6 @@ internal class Program
 
       selectedIndex = HandleNavigation(key, selectedIndex, userNames.Count);
     }
-    Console.Clear();
-    return availableUsers[selectedIndex];
-  }
 
   enum ViewMode { Library, Store }
 
@@ -95,18 +92,17 @@ internal class Program
           break;
       }
     }
-  }
 
-  static void PrintWelcomeScreen()
-  {
-    Console.Clear();
-    Console.WriteLine(@"                                  Welcome to the GameLib v1.0!");
-    Console.WriteLine(
-        @"===================================================================================================="
-    );
-    Console.WriteLine("                                    Press any key to start...");
-    Console.ReadKey();
-  }
+    static void PrintWelcomeScreen()
+    {
+        Console.Clear();
+        Console.WriteLine(@"                                  Welcome to the GameLib v1.0!");
+        Console.WriteLine(
+            @"===================================================================================================="
+        );
+        Console.WriteLine("                                    Press any key to start...");
+        Console.ReadKey();
+    }
 
   static void PrintMenu(List<string> menu, int currentIndex)
   {
@@ -121,12 +117,8 @@ internal class Program
         Console.WriteLine($"  {menu[i]}"); // spaces to write over previously selected items
       }
     }
-    Console.WriteLine("\nUse ^/v arrows to navigate, Enter to select");
-  }
 
-  static int MenuSelect(string[] menu, int currentIndex)
-  {
-    return Console.ReadKey().Key switch
+    static int MenuSelect(string[] menu, int currentIndex)
     {
       ConsoleKey.UpArrow => Math.Max(0, currentIndex - 1), // prevent negative index
       ConsoleKey.DownArrow => Math.Min(menu.Length - 1, currentIndex + 1), // prevent index going over lenght of menu
@@ -149,21 +141,3 @@ internal class Program
     };
   }
 }
-
-
-// User? user = UserRepository.GetUserById(4);
-//
-// if (user == null)
-//     return;
-//
-// Library? library = UserRepository.GetUserLibrary(user);
-//
-// if (library != null)
-// {
-//     foreach (Game game in library.Games)
-//     {
-//         Console.WriteLine(
-//             $"Game: {game.Id}, {game.Title}, {game.Price}, {game.Rating} {game.PrintGameCategories()}, Studio Behind The Game {game.Studio.Name} Size of Studio: {game.Studio.Size}"
-//         );
-//     }
-// }
