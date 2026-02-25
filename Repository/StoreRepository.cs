@@ -25,38 +25,36 @@ public static class StoreRepository
             Console.WriteLine("Purchase Failed: User data is missing.");
             return;
         }
-
         if (user.Wallet == null)
         {
             Console.WriteLine("Purchase Failed: User wallet is missing.");
             return;
         }
-
         if (user.Wallet.Balance < 0)
         {
-            const string query = @"UPDATE wallet SET balance = @BALANCE WHERE user_id = @userId";
+            Console.WriteLine("Purchase Failed: Wallet balance is negative.");
+            return;
+        }
 
-            try
+        const string query = @"UPDATE wallet SET balance = @BALANCE WHERE user_id = @userId";
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(query, connection);
-
-                    command.Parameters.AddWithValue("@BALANCE", user.Wallet.Balance);
-                    command.Parameters.AddWithValue("@userID", user.Id);
-
-                    command.ExecuteNonQuery();
-                    Console.WriteLine(
-                        $"Successfully updated wallet balance for: {user.Id} balance is now: {user.Wallet.Balance}"
-                    );
-                }
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@BALANCE", user.Wallet.Balance);
+                command.Parameters.AddWithValue("@userID", user.Id);
+                command.ExecuteNonQuery();
+                Console.WriteLine(
+                    $"Successfully updated wallet balance for: {user.Id} balance is now: {user.Wallet.Balance}"
+                );
             }
-            catch (SqlException ex)
-            {
-                Console.WriteLine("Purchase Failed: A database error occurred: " + ex.Message);
-                return;
-            }
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine("Purchase Failed: A database error occurred: " + ex.Message);
+            return;
         }
 
         ConsoleKey key = Console.ReadKey(intercept: true).Key;
