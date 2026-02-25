@@ -7,7 +7,6 @@ public static class UserRepository
 {
     static string connectionString = DBConnection.Connection;
 
-    // IMPLEMENT, + Menu for creating a user
     private static void CreateUser(User user)
     {
         try
@@ -69,10 +68,21 @@ public static class UserRepository
         }
     }
 
-    // IMPLEMENT, + Menu for deleting a user
     public static void DeleteUser(User user)
     {
-        try { }
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                const string query = "DELETE FROM users WHERE user_id = @USER_ID";
+                connection.Open();
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@USER_ID", user.Id);
+
+                command.ExecuteNonQuery();
+            }
+        }
         catch (SqlException ex)
         {
             Console.WriteLine($"SQL Exception Occured: {ex.Message}");
