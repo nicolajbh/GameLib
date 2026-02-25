@@ -13,7 +13,7 @@ internal class Program
       Console.WriteLine("No users found or login failed. Exiting...");
       return;
     }
-    // ShowMainMenu(user);
+    ShowMainMenu(user);
   }
 
   private static readonly CultureInfo EuroCulture = new CultureInfo("fr-FR");
@@ -115,6 +115,30 @@ internal class Program
           creditOptions = StoreRepository.GetCreditOptions();
           menuItems = creditOptions.Select(c => c.ToString("C", EuroCulture)).ToList();
           selectedIndex = 0;
+          break;
+        case ConsoleKey.D:
+          while (true)
+          {
+            Console.Clear();
+            Console.WriteLine("Are you sure you want to delete your user? All data will be lost. [Y/N]");
+            string response = Console.ReadLine();
+            if (response.ToUpper().Trim() == "Y")
+            {
+              UserRepository.DeleteUser(user);
+              Console.WriteLine("Goodbye!");
+              Console.ReadKey();
+              Environment.Exit(0);
+              break;
+            }
+            else if (response.ToUpper().Trim() == "N")
+            {
+              break;
+            }
+            else
+            {
+              Console.WriteLine("Please enter a valid answer");
+            }
+          }
           break;
       }
     }
